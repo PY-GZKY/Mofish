@@ -1,4 +1,0 @@
-
-        [console_scripts]
-        moyu=src.main:cli
-    
