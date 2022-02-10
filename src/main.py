@@ -1,21 +1,8 @@
 # -*- coding: utf-8 -*-
 import datetime
 
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
+import click
 from zhdate import ZhDate as lunar_date
-
-app = FastAPI(
-    debug=False,
-    title="My API",
-    docs_url=f"/docs",
-    openapi_url=f"/openapi.json"
-)
-
-templates = Jinja2Templates(directory="templates")
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 def get_week_day(date):
@@ -33,18 +20,9 @@ def get_week_day(date):
 
 
 def time_parse(today):
-    # print(today.year, today.month, today.day)
-    # print("大年时间: ", lunar_date(today.year+1, 1, 1).to_datetime().date())
-    # print("端午时间: ", lunar_date(today.year, 5, 5).to_datetime().date())
-    # print("中秋时间: ", lunar_date(today.year, 8, 15).to_datetime().date())
-    # print("元旦时间: ", f"{today.year+1}-01-01")
-    # print("清明时间: ", f"{today.year+1}-04-05")
-    # print("劳动时间: ", f"{today.year+1}-05-01")
-    # print("国庆时间: ", f"{today.year+1}-10-01")
-
     distance_big_year = (lunar_date(today.year, 1, 1).to_datetime().date() - today).days
     distance_big_year = distance_big_year if distance_big_year > 0 else (
-                lunar_date(today.year + 1, 1, 1).to_datetime().date() - today).days
+            lunar_date(today.year + 1, 1, 1).to_datetime().date() - today).days
 
     distance_5_5 = (lunar_date(today.year, 5, 5).to_datetime().date() - today).days
     distance_5_5 = distance_5_5 if distance_5_5 > 0 else (
@@ -80,7 +58,7 @@ def time_parse(today):
     # print("距离周末: ", 5 - today.weekday())
 
     time_ = [
-        {"v_": 5 - today.weekday(), "title": "周末"},  # 距离周末
+        {"v_": 5 - 1 - today.weekday(), "title": "周末"},  # 距离周末
         {"v_": distance_year, "title": "元旦"},  # 距离元旦
         {"v_": distance_big_year, "title": "过年"},  # 距离过年
         {"v_": distance_4_5, "title": "清明节"},  # 距离清明
@@ -94,28 +72,33 @@ def time_parse(today):
     return time_
 
 
-@app.get("/", response_class=HTMLResponse)
-async def readme(request: Request):
+@click.command()
+def cli():
+    """你好，摸鱼人，工作再累，一定不要忘记摸鱼哦 !"""
+    from colorama import init, Fore
+    init(autoreset=True)  # 初始化，并且设置颜色设置自动恢复
+    print()
     today = datetime.date.today()
     now_ = f"{today.year}年{today.month}月{today.day}日"
     week_day_ = get_week_day(today)
+    print(f'\t\t {Fore.GREEN}{now_} {week_day_}')
+    str_ = '''
+    你好，摸鱼人，工作再累，一定不要忘记摸鱼哦 ! 
+    有事没事起身去茶水间去廊道去天台走走，别老在工位上坐着。
+    多喝点水，钱是老板的，但命是自己的 !
+    '''
+    print(f'{Fore.RED}{str_}')
+
     time_ = time_parse(today)
-    return templates.TemplateResponse("readme.html",
-                                      {"request": request, "time_": time_, "now_": now_, "week_day_": week_day_})
+    for t_ in time_:
+        print(f'\t\t {Fore.RED}距离{t_.get("title")}还有: {t_.get("v_")}天')
+    tips_ = '''
+    [友情提示] 三甲医院 ICU 躺一天平均费用大概一万块。
+    你晚一天进 ICU，就等于为你的家庭多赚一万块。少上班，多摸鱼。\n
+    '''
+    print(f'{Fore.RED}{tips_}')
+    print(f'\t\t\t\t\t\t\t{Fore.YELLOW} 摸鱼办')
 
 
 if __name__ == '__main__':
-    import uvicorn
-    uvicorn.run(app='main:app', host="0.0.0.0", port=8080, reload=True)
-
-import click
-@click.command()
-@click.option('--count', default=1, help='Number of greetings.')
-@click.option('--name', prompt='Your name',
-              help='The person to greet.')
-def hello(count, name):
-    """Simple program that greets NAME for a total of COUNT times."""
-    for x in range(count):
-        click.echo('Hello %s!' % name)
-if __name__ == '__main__':
-    hello()
+    cli()

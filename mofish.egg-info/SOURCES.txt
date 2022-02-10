@@ -1,0 +1,13 @@
+.gitignore
+LICENSE
+README.md
+requirements.txt
+setup.py
+mofish.egg-info/PKG-INFO
+mofish.egg-info/SOURCES.txt
+mofish.egg-info/dependency_links.txt
+mofish.egg-info/entry_points.txt
+mofish.egg-info/requires.txt
+mofish.egg-info/top_level.txt
+src/__init__.py
+src/main.py
