@@ -4,7 +4,7 @@ description = '你好，摸鱼人，工作再累，一定不要忘记摸鱼哦! 
 
 setup(
     name='mofish',
-    version='1.0.0',
+    version='1.0.2',
     description=description,
     long_description_content_type='text/markdown',
     classifiers=[
