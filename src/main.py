@@ -57,8 +57,10 @@ def time_parse(today):
     # print("距离国庆: ", distance_10_1)
     # print("距离周末: ", 5 - today.weekday())
 
+    distance_week_ = 5 - 1 - today.weekday()
+
     time_ = [
-        {"v_": 5 - 1 - today.weekday(), "title": "周末"},  # 距离周末
+        {"v_": distance_week_ if distance_week_ > 0 else 0, "title": "周末"},  # 距离周末
         {"v_": distance_year, "title": "元旦"},  # 距离元旦
         {"v_": distance_big_year, "title": "过年"},  # 距离过年
         {"v_": distance_4_5, "title": "清明节"},  # 距离清明
