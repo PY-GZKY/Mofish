@@ -30,7 +30,7 @@ setup(
         'Topic :: System :: Monitoring',
         'Topic :: System :: Systems Administration',
     ],
-    python_requires='>=3.7',
+    python_requires='>=3.6',
     author='PY-GZKY',
     author_email='341796767@qq.com',
     url='https://github.com/PY-GZKY/Moyu_',
