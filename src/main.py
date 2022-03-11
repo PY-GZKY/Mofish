@@ -19,6 +19,18 @@ def get_week_day(date):
     return week_day_dict[day]
 
 
+def get_closing_time(closing_time: str = "18:00:00"):
+    now_ = datetime.datetime.now()
+    target_ = datetime.datetime.strptime(f"{now_.year}-{now_.month}-{now_.day} {closing_time}", '%Y-%m-%d %H:%M:%S')
+    if now_ < target_:
+        time_delta_ = target_ - now_
+        secs = time_delta_.seconds
+        hours = secs // 3600
+        mins = (secs % 3600) // 60
+        return f'{hours} 小时 {mins} 分钟'
+    return False
+
+
 def time_parse(today):
     distance_big_year = (lunar_date(today.year, 1, 1).to_datetime().date() - today).days
     distance_big_year = distance_big_year if distance_big_year > 0 else (
@@ -94,6 +106,12 @@ def cli():
     time_ = time_parse(today)
     for t_ in time_:
         print(f'\t\t {Fore.RED}距离{t_.get("title")}还有: {t_.get("v_")}天')
+
+    if today.weekday() in range(5):
+        if get_closing_time():
+            print(f'\n\t{Fore.CYAN}此时距离下班时间还有 {get_closing_time()}。')
+            print(f'\t{Fore.RED}请提前整理好自己的桌面, 到点下班。\n')
+
     tips_ = '''
     [友情提示] 三甲医院 ICU 躺一天平均费用大概一万块。
     你晚一天进 ICU，就等于为你的家庭多赚一万块。少上班，多摸鱼。\n
