@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 import datetime
+import os
+import time
 
 import click
+from colorama import init, Fore
 from zhdate import ZhDate as lunar_date
 
 
@@ -27,7 +30,8 @@ def get_closing_time(closing_time: str = "18:00:00"):
         secs = time_delta_.seconds
         hours = secs // 3600
         mins = (secs % 3600) // 60
-        return f'{hours} 小时 {mins} 分钟'
+        secs = secs % 60
+        return f'{hours} 小时 {mins} 分钟 {secs} 秒'
     return False
 
 
@@ -85,39 +89,49 @@ def time_parse(today):
     time_ = sorted(time_, key=lambda x: x['v_'], reverse=False)
     return time_
 
+def clear_console():
+    command = 'clear'
+    if os.name in ('nt', 'dos'):  # If Machine is running on Windows, use 'cls'
+        command = 'cls'
+    os.system(command)
 
 @click.command()
-def cli():
+@click.option('-up', is_flag=True, help='更新状态')
+def cli(up):
     """你好，摸鱼人，工作再累，一定不要忘记摸鱼哦 !"""
-    from colorama import init, Fore
     init(autoreset=True)  # 初始化，并且设置颜色设置自动恢复
-    print()
-    today = datetime.date.today()
-    now_ = f"{today.year}年{today.month}月{today.day}日"
-    week_day_ = get_week_day(today)
-    print(f'\t\t {Fore.GREEN}{now_} {week_day_}')
-    str_ = '''
-    你好，摸鱼人，工作再累，一定不要忘记摸鱼哦 ! 
-    有事没事起身去茶水间去廊道去天台走走，别老在工位上坐着。
-    多喝点水，钱是老板的，但命是自己的 !
-    '''
-    print(f'{Fore.RED}{str_}')
+    while True:
+        clear_console()  # clear console
+        today = datetime.date.today()
+        now_ = f"{today.year}年{today.month}月{today.day}日"
+        week_day_ = get_week_day(today)
+        print(f'\t\t {Fore.GREEN}{now_} {week_day_}')
+        str_ = '''
+        你好，摸鱼人，工作再累，一定不要忘记摸鱼哦 ! 
+        有事没事起身去茶水间去廊道去天台走走，别老在工位上坐着。
+        多喝点水，钱是老板的，但命是自己的 !
+        '''
+        print(f'{Fore.RED}{str_}')
 
-    time_ = time_parse(today)
-    for t_ in time_:
-        print(f'\t\t {Fore.RED}距离{t_.get("title")}还有: {t_.get("v_")}天')
+        time_ = time_parse(today)
+        for t_ in time_:
+            print(f'\t\t {Fore.RED}距离{t_.get("title")}还有: {t_.get("v_")}天')
 
-    if today.weekday() in range(5):
-        if get_closing_time():
-            print(f'\n\t{Fore.CYAN}此时距离下班时间还有 {get_closing_time()}。')
-            print(f'\t{Fore.RED}请提前整理好自己的桌面, 到点下班。\n')
+        if today.weekday() in range(5):
+            if get_closing_time():
+                print(f'\n\t{Fore.CYAN}此时距离下班时间还有 {get_closing_time()}。')
+                print(f'\t{Fore.RED}请提前整理好自己的桌面, 到点下班。\n')
 
-    tips_ = '''
-    [友情提示] 三甲医院 ICU 躺一天平均费用大概一万块。
-    你晚一天进 ICU，就等于为你的家庭多赚一万块。少上班，多摸鱼。\n
-    '''
-    print(f'{Fore.RED}{tips_}')
-    print(f'\t\t\t\t\t\t\t{Fore.YELLOW} 摸鱼办')
+        tips_ = '''
+        [友情提示] 三甲医院 ICU 躺一天平均费用大概一万块。
+        你晚一天进 ICU，就等于为你的家庭多赚一万块。少上班，多摸鱼。\n
+        '''
+        print(f'{Fore.RED}{tips_}')
+        print(f'\t\t\t\t\t\t\t{Fore.YELLOW} 摸鱼办')
+        if not up:
+            break
+
+        time.sleep(1)  # 每秒更新一次
 
 
 if __name__ == '__main__':
