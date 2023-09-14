@@ -4,7 +4,7 @@ description = '你好，摸鱼人，工作再累，一定不要忘记摸鱼哦! 
 
 setup(
     name='mofish',
-    version='1.0.6',
+    version='2023.09.12',
     description=description,
     long_description_content_type='text/markdown',
     classifiers=[
@@ -23,6 +23,7 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'Topic :: Internet',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: System :: Clustering',
@@ -43,7 +44,9 @@ setup(
     """,
     install_requires=[
         'click>=6.7',
-        'zhdate'
+        'zhdate',
+        'blessed',
+        'colorama'
     ],
 
 )
